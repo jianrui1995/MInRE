@@ -1,8 +1,8 @@
 import tensorflow as tf
-try:
-    import tensorflow.python.keras as keras
-except:
-    import tensorflow.keras as keras
+import os
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = '3'
+
 X = tf.constant([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
 y = tf.constant([[10.0], [20.0]])
 
