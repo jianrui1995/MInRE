@@ -18,7 +18,7 @@ class ReadAndDivede():
                 sen = re.sub(r"</*e[12]>","",sen)
                 print(sen,file=self.f3,end="\n")
             if i % 4 ==1:
-                print(sentence_list[i],file=self.f2,end="\n")
+                print(sentence_list[i],file=self.f2,end="")
 
 
 
