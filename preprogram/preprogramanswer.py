@@ -26,19 +26,16 @@ class Answerlayer():
         '''
         将dataset中所有的answer转换成id
         '''
-        dataset = self.answer_dataset.map(lambda x: self.convertanswer_map_fun(x))
+        dataset = self.answer_dataset.map(lambda x: tf.py_function(self.convertanswer,inp=[x],Tout=tf.int32))
         return dataset
 
 
     def convertanswer(self,t):
         '''
-        此方法用于 map_fun 参数
+        此方法用于 pt_function 方法的参数
         '''
         id = self.answers2id[t.numpy()]
         return id
-
-    def convertanswer_map_fun(self,t):
-        return tf.py_function(self.convertanswer,inp=[t],Tout=(tf.int32))
 
 if __name__ == "__main__":
     an = Answerlayer()
