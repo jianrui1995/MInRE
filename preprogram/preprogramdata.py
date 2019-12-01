@@ -13,12 +13,13 @@ class ReadAndDivede():
         sentence_list = self.f.readlines()
         for i in range(0,len(sentence_list)):
             if i % 4 ==0:
-                sen = sentence_list[i].split("\"")[-2]
+                sen = "".join(list(re.sub(r".*	","",sentence_list[i]))[1:-2])
+                sen = re.sub(r"[,.]","",sen)
                 print(sen,file=self.f1,end="\n")
                 sen = re.sub(r"</*e[12]>","",sen)
                 print(sen,file=self.f3,end="\n")
             if i % 4 ==1:
-                print(sentence_list[i],file=self.f2,end="")
+                print(re.sub(r"[,.]","",sentence_list[i]),file=self.f2,end="")
 
 
 

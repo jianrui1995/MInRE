@@ -5,11 +5,11 @@ class Answerlayer():
     def __init__(self):
         self.answers2id = {}
         self.answer_dataset = tf.data.TextLineDataset(setting.ANSWER_PATH)
+        self.collectanswer(self.answer_dataset)
 
     def __call__(self):
-        self.collectanswer(self.answer_dataset)
         dateset = self.answer2id_all()
-        return dateset,self.answers2id
+        return dateset
 
     def collectanswer(self,dataset):
         """
@@ -42,3 +42,4 @@ if __name__ == "__main__":
     a,b = an()
     for c in a.take(3):
         print(c)
+
