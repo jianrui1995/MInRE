@@ -1,31 +1,15 @@
 import tensorflow as tf
-try:
-    import tensorflow.python.keras as keras
-except:
-    import tensorflow.keras as keras
+import CNN.setting as setting
 
-class Setting():
-    def __init__(self):
-        # 设置输出通道数量
-        self.FILTERS = 1000
-        # 设置词向量维度
-        self.WORDVEC = 350
-        # 设置位置向量维度
-        self.POSVEC = 50
-        # 总体向量维度
-        self.VEC = self.POSVEC + self.WORDVEC
-        # 卷积核宽
-        self.KERNELWEIGHT = 4
 
-class model(tf.keras.Model):
+class Model(tf.keras.Model):
     def __init__(self):
         super().__init__()
-        self.setting = Setting()
         self.conv = tf.keras.layers.Conv2D(
-            filter=self.setting.FILTERS,
-            kerner_size=[self.setting.VEC, self.setting.KERNELWEIGHT],
-            strides=(1, 1),
-            padding="SAME",
+            filter=setting.FILTERS,
+            kerner_size=[setting.VEC, setting.KERNELWEIGHT],
+            strides=(setting.VEC, 1),
+            padding="VALID",
             data_format="channels_first",
             acitvation=tf.nn.relu,
             use_bias=True
