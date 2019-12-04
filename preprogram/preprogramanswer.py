@@ -37,6 +37,14 @@ class Answerlayer():
         id = self.answers2id[t.numpy()]
         return id
 
+class ContactVecAndLoc():
+    '''
+    对词向量和位置向量进行连接
+    '''
+    pass
+
+
+
 if __name__ == "__main__":
     an = Answerlayer()
     a,b = an()

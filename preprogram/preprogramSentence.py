@@ -8,7 +8,7 @@ class SentenceLayer():
         self.model = gensim.models.Word2Vec.load(setting.WORD2VEC_MODEL_PATH)
 
     def __call__(self):
-        dataset = self.sentence_dataset.map(lambda x: tf.py_function(self.sentence2wordvec,inp=[x],Tout=[tf.float32,tf.int32]))
+        dataset = self.sentence_dataset.map(lambda x: tf.py_function(self.sentence2wordvec,inp=[x],Tout=tf.float64))
         return dataset
 
     def sentence2wordvec(self,c):
@@ -21,11 +21,11 @@ class SentenceLayer():
                vec.append(self.model[word])
             except BaseException:
                 vec.append(unknown)
-        return [vec,len(words_list)]
+        return [vec]
 
 if __name__ == "__main__":
     s = SentenceLayer()
     dataset = s()
     print(dataset.element_spec)
-    for data in dataset.take(2):
+    for data in dataset.take(1):
         print(data)
