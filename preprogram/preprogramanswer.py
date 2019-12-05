@@ -1,5 +1,7 @@
 import tensorflow as tf
 import preprogram.setting as setting
+from preprogram.preprogramSentence import SentenceLayer
+from preprogram.preprogramSentenceWithEntity import SentenceWithEntityLayer
 
 class Answerlayer():
     def __init__(self):
@@ -20,6 +22,7 @@ class Answerlayer():
             answers.add(answer.numpy())
         for v,k in enumerate(answers):
             self.answers2id[k]=v
+        print(len(answers))
 
 
     def answer2id_all(self):
@@ -37,17 +40,38 @@ class Answerlayer():
         id = self.answers2id[t.numpy()]
         return id
 
-class ContactVecAndLoc():
+class VecAndLoc():
     '''
     对词向量和位置向量进行连接
     '''
-    pass
+    def __init__(self):
+        self.Sen = SentenceLayer()
+        self.SenWEnt = SentenceWithEntityLayer()
+
+    def __call__(self):
+        dataset = tf.data.Dataset.zip((self.Sen(),self.SenWEnt()))
+        dataset = dataset.map(lambda x,y: self.concat(x,y))
+        return dataset
+
+    def concat(self,x,y):
+        return tf.concat(values=(x,y),axis=1)
 
 
 
 if __name__ == "__main__":
-    an = Answerlayer()
-    a,b = an()
-    for c in a.take(3):
-        print(c)
+    '''调用Answerlayer'''
+    # an = Answerlayer()
+    # a = an()
+    # b =a.element_spec
+    # print(b)
+    # for c in a.take(3):
+    #     print(c.shape.dims)
 
+    '''调用VecAndLoc'''
+    v = VecAndLoc()
+    a = v()
+    for data in a.take(1):
+        print(type(data))
+        dims = data.shape.dims
+        data = tf.reshape(data,[16,2,-1])
+        print(data)
