@@ -22,7 +22,6 @@ class Answerlayer():
             answers.add(answer.numpy())
         for v,k in enumerate(answers):
             self.answers2id[k]=v
-        print(len(answers))
 
 
     def answer2id_all(self):
