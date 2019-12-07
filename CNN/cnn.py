@@ -21,15 +21,19 @@ class Model(tf.keras.Model):
             data_format="channels_first"
         )
         self.dense = tf.keras.layers.Dense(Psetting.LABEL_NUM,use_bias=False)
+
+
     def call(self,input):
         out = self.conv(input)
-        dims = out.shape.dims
         out = self.maxpool(out)
-        print("maxpool:",out)
         dims = out.shape.dims
-        print(dims)
-        out = tf.reshape(out,[dims[0],dims[1],-1])
+        out = tf.reshape(out,[dims[0],-1])
+        out = self.dense(out)
+        # 研究dence层的输入特点。
+        print(out)
         return out
+
+
 if __name__  == "__main__":
     o = Outputlayer()
     o = o()
