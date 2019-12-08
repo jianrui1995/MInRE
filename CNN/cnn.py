@@ -29,7 +29,6 @@ class Model(tf.keras.Model):
         dims = out.shape.dims
         out = tf.reshape(out,[dims[0],-1])
         out = self.dense(out)
-        # 研究dence层的输入特点。
         print(out)
         return out
 
