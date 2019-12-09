@@ -8,7 +8,7 @@ class Answerlayer():
         self.answers2id = {}
         self.answer_dataset = tf.data.TextLineDataset(setting.ANSWER_PATH)
         self.collectanswer(self.answer_dataset)
-
+        print(self.answers2id)
     def __call__(self):
         dateset = self.answer2id_all()
         return dateset

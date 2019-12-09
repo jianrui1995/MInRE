@@ -8,3 +8,11 @@ POSVEC = 50
 VEC = POSVEC*2 + WORDVEC
 # 卷积核宽
 KERNELWEIGHT = 4
+# 训练次数
+EPOCH = 1000
+# M正的值
+M_POS = 1
+# M负的值
+M_NEG = 2
+# 放大因子
+R = 2
