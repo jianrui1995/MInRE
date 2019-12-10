@@ -14,6 +14,7 @@ class SentenceWithEntityLayer():
         return dataset
 
     def entity2location(self,t):
+        # global location1, location2
         words_list = t.numpy().decode().split(" ")
         mark1,mark2 = 1,1
         loc_list = []

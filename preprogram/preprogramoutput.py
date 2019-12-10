@@ -13,5 +13,8 @@ class Outputlayer():
 if __name__ == "__main__":
     o = Outputlayer()
     a = o()
-    for data in a.take(1):
+    i = 0
+    for data in a:
+        print(i)
         print(data)
+        i = i+1
