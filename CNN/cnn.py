@@ -39,22 +39,21 @@ class Train():
 
     def train(self):
         output = self.output.batch(1).batch(1)
-        optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
         # 观察数据：在model输出计算梯度和加上loss函数计算梯度。比较两个导数的差异。
         for _ in range(setting.EPOCH):
-            i=1
             for data in output:
                 with tf.GradientTape() as tape:
                     out = self.model(data[0])
+                    print("out:",out)
                     loss = self.loss(out,data[1],self.outputobj.ans.answers2id)
+                    print("loss:",loss,data[1])
                 grads = tape.gradient(loss,self.model.trainable_variables)
                 # print(grads)
                 optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
-                print(loss)
-                if i>20:
-                    break
+                # break
 
-            # break
+            break
 
     @tf.function
     def loss(self,out,label,label_dict):
@@ -66,18 +65,21 @@ class Train():
             if label == tf.gather(order[1],0,axis=1):
                 # 若第一个就是最大值，则取第二大值
                 return tf.math.log(1+tf.math.exp(setting.R*(setting.M_NEG+tf.gather(order[0],1,axis=1))))
+                # return 1
             else:
                 # 最大值不为对应的label
                 return tf.math.log(1+tf.math.exp(setting.R*(setting.M_NEG+tf.gather(order[0],0,axis=1))))
+                # return 2
         else:
             order = tf.math.top_k(out,2)
-            if label ==tf.gather(order[1],0,axis=1):
+            if label == tf.gather(order[1],0,axis=1):
                 # 若第一个就是label，则取第二大值
                 return tf.math.log(1+tf.math.exp(setting.R*((setting.M_POS-tf.gather(tf.reshape(out,[-1]),tf.reshape(label,[-1]))))))+tf.math.log(1+tf.math.exp(setting.R*(setting.M_NEG+tf.gather(order[0],1,axis=1))))
+                # return 3
             else:
                 # 最大值不为对应的label
                 return tf.math.log(1+tf.math.exp(setting.R*((setting.M_POS-tf.gather(tf.reshape(out,[-1]),tf.reshape(label,[-1]))))))+tf.math.log(1+tf.math.exp(setting.R*(setting.M_NEG+tf.gather(order[0],0,axis=1))))
-
+                # return 4
 if __name__  == "__main__":
     t = Train()
     t.train()

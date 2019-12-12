@@ -11,8 +11,8 @@ KERNELWEIGHT = 4
 # 训练次数
 EPOCH = 1000
 # M正的值
-M_POS = 1
+M_POS = 2.5
 # M负的值
-M_NEG = 2
+M_NEG = 0.5
 # 放大因子
 R = 2
