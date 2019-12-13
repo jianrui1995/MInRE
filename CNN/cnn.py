@@ -5,6 +5,7 @@ from preprogram.preprogramoutput import Outputlayer
 
 class Model(tf.keras.Model):
     def __init__(self):
+        init = tf.keras.initializers.RandomNormal()
         super(Model,self).__init__()
         self.conv = tf.keras.layers.Conv2D(
             filters=setting.FILTERS,
@@ -18,9 +19,9 @@ class Model(tf.keras.Model):
         self.maxpool = tf.keras.layers.MaxPool2D(
             pool_size=(Psetting.MAX_WORD_NUM,1),
             padding="SAME",
-            data_format="channels_first"
+            data_format="channels_first",
         )
-        self.dense = tf.keras.layers.Dense(Psetting.LABEL_NUM,use_bias=False)
+        self.dense = tf.keras.layers.Dense(Psetting.LABEL_NUM,use_bias=False,activation=tf.keras.activations.softmax)
 
     # @tf.function
     def call(self,input):
@@ -29,6 +30,8 @@ class Model(tf.keras.Model):
         dims = out.shape.dims
         out = tf.reshape(out,[dims[0],-1])
         out = self.dense(out)
+        # out = tf.keras.activations.tanh(out)
+        # out = tf.matmul(tf.constant([[20.0]],dtype=tf.float32),out)
         return out
 
 class Train():
@@ -47,7 +50,7 @@ class Train():
                     out = self.model(data[0])
                     print("out:",out)
                     loss = self.loss(out,data[1],self.outputobj.ans.answers2id)
-                    print("loss:",loss,data[1])
+                    print("loss:",loss)
                 grads = tape.gradient(loss,self.model.trainable_variables)
                 # print(grads)
                 optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
