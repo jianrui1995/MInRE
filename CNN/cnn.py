@@ -26,10 +26,16 @@ class Model(tf.keras.Model):
     # @tf.function
     def call(self,input):
         out = self.conv(input)
+        # dims = out.shape.dims
+        # print(dims)
         out = self.maxpool(out)
         dims = out.shape.dims
+        # print(dims)
         out = tf.reshape(out,[dims[0],-1])
         out = self.dense(out)
+        dims = out.shape.dims
+        # print(dims)
+        # print(out)
         # out = tf.keras.activations.tanh(out)
         # out = tf.matmul(tf.constant([[20.0]],dtype=tf.float32),out)
         return out
@@ -41,6 +47,9 @@ class Train():
         self.model = Model()
 
     def train(self):
+        f1 = open("out.txt","w",encoding="utf8")
+        f2 = open("loss.txt","w",encoding="utf8")
+        f3 = open("grads.txt","w",encoding="utf8")
         output = self.output.batch(1).batch(1)
         optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
         # 观察数据：在model输出计算梯度和加上loss函数计算梯度。比较两个导数的差异。
@@ -48,14 +57,13 @@ class Train():
             for data in output:
                 with tf.GradientTape() as tape:
                     out = self.model(data[0])
-                    print("out:",out)
+                    print("out:",out,file=f1)
                     loss = self.loss(out,data[1],self.outputobj.ans.answers2id)
-                    print("loss:",loss)
-                grads = tape.gradient(loss,self.model.trainable_variables)
-                # print(grads)
-                optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
+                    print("loss:",loss,file=f2)
+                # grads = tape.gradient(loss,self.model.trainable_variables)
+                # print("grads:",grads,file=f3)
+                # optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
                 # break
-
             break
 
     @tf.function
