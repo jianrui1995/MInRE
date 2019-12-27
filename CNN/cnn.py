@@ -58,14 +58,21 @@ class Train():
                 with tf.GradientTape() as tape:
                     out = self.model(data[0])
                     print("out:",out,file=f1)
-                    loss = self.loss(out,data[1],self.outputobj.ans.answers2id)
+                    loss = self.loss(out,data[1])
                     print("loss:",loss,file=f2)
-                # grads = tape.gradient(loss,self.model.trainable_variables)
-                # print("grads:",grads,file=f3)
-                # optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
-                # break
+                grads = tape.gradient(loss,self.model.trainable_variables)
+                print("grads:",grads,file=f3)
+                optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
             break
+    @tf.function
+    def loss(self,input,label):
+        # print(label.numpy())
+        labels = tf.sparse.SparseTensor(indices=[[0,label.numpy()[0][0]]],values=[1],dense_shape=[1,Psetting.LABEL_NUM])
+        return tf.nn.softmax_cross_entropy_with_logits(tf.sparse.to_dense(labels),input)
 
+
+    """
+    被丢弃的，论文中用的损失函数。无法解决指数超差计数范围的问题。
     @tf.function
     def loss(self,out,label,label_dict):
         '''
@@ -91,6 +98,8 @@ class Train():
                 # 最大值不为对应的label
                 return tf.math.log(1+tf.math.exp(setting.R*((setting.M_POS-tf.gather(tf.reshape(out,[-1]),tf.reshape(label,[-1]))))))+tf.math.log(1+tf.math.exp(setting.R*(setting.M_NEG+tf.gather(order[0],0,axis=1))))
                 # return 4
+    """
+
 if __name__  == "__main__":
     t = Train()
     t.train()
