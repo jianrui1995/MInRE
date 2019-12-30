@@ -21,7 +21,7 @@ class Model(tf.keras.Model):
             padding="SAME",
             data_format="channels_first",
         )
-        self.dense = tf.keras.layers.Dense(Psetting.LABEL_NUM,use_bias=False,activation=tf.keras.activations.softmax)
+        self.dense = tf.keras.layers.Dense(Psetting.LABEL_NUM,use_bias=False)
 
     # @tf.function
     def call(self,input):
@@ -51,7 +51,7 @@ class Train():
         f2 = open("loss.txt","w",encoding="utf8")
         f3 = open("grads.txt","w",encoding="utf8")
         output = self.output.batch(1).batch(1)
-        optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5)
         # 观察数据：在model输出计算梯度和加上loss函数计算梯度。比较两个导数的差异。
         for _ in range(setting.EPOCH):
             for data in output:
@@ -64,7 +64,7 @@ class Train():
                 print("grads:",grads,file=f3)
                 optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
             break
-    @tf.function
+    # @tf.function
     def loss(self,input,label):
         # print(label.numpy())
         labels = tf.sparse.SparseTensor(indices=[[0,label.numpy()[0][0]]],values=[1],dense_shape=[1,Psetting.LABEL_NUM])
