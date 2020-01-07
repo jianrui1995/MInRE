@@ -5,9 +5,9 @@ from preprogram.preprogramSentenceWithEntity import SentenceWithEntityLayer
 
 class Answerlayer():
     def __init__(self):
-        self.answers2id = {}
+        self.answers2id = setting.answer2id
         self.answer_dataset = tf.data.TextLineDataset(setting.ANSWER_PATH)
-        self.collectanswer(self.answer_dataset)
+        # self.collectanswer(self.answer_dataset)
         print(self.answers2id)
     def __call__(self):
         dateset = self.answer2id_all()
@@ -16,6 +16,7 @@ class Answerlayer():
     def collectanswer(self,dataset):
         """
         统计数据的分类数量，并建立映射
+        已经丢弃使用，因为不用在统计，在setting文件中直接导入了设置。
         """
         answers = set()
         for answer in dataset:

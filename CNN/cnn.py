@@ -40,11 +40,15 @@ class Model(tf.keras.Model):
         # out = tf.matmul(tf.constant([[20.0]],dtype=tf.float32),out)
         return out
 
-class Train():
-    def __init__(self):
+class Train_Test():
+    def __init__(self,path=False):
+        self.model = Model()
         self.outputobj = Outputlayer()
         self.output = self.outputobj()
-        self.model = Model()
+        # 载入模型
+        if not path:
+            pass
+
 
     def train(self):
         f1 = open("out.txt","w",encoding="utf8")
@@ -52,7 +56,6 @@ class Train():
         f3 = open("grads.txt","w",encoding="utf8")
         output = self.output.batch(1).batch(1)
         optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5)
-        # 观察数据：在model输出计算梯度和加上loss函数计算梯度。比较两个导数的差异。
         for _ in range(setting.EPOCH):
             for data in output:
                 with tf.GradientTape() as tape:
@@ -64,9 +67,18 @@ class Train():
                 print("grads:",grads,file=f3)
                 optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
             break
+
+    def test(self):
+        '''
+        测试用的方法
+        '''
+        pass
+
     # @tf.function
     def loss(self,input,label):
-        # print(label.numpy())
+        '''
+        损失函数
+        '''
         labels = tf.sparse.SparseTensor(indices=[[0,label.numpy()[0][0]]],values=[1],dense_shape=[1,Psetting.LABEL_NUM])
         return tf.nn.softmax_cross_entropy_with_logits(tf.sparse.to_dense(labels),input)
 
@@ -101,5 +113,5 @@ class Train():
     """
 
 if __name__  == "__main__":
-    t = Train()
+    t = Train_Test()
     t.train()
