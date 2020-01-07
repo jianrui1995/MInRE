@@ -1,4 +1,4 @@
-import tensorflow as tf
+
 from preprogram.preprogramanswer import *
 
 class Outputlayer():

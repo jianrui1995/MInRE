@@ -4,10 +4,10 @@ class ReadAndDivede():
     预处理训练文件，读取并且将信息拆分。
     '''
     def __init__(self):
-        self.f = open("../data/TRAIN_FILE.TXT", "r", encoding="utf8")
-        self.f1 = open("../data/TRAIN_SENTENCE_WITH_ENTITY.TXT", "w", encoding="utf8")
-        self.f2 = open("../data/TRAIN_ANSWER.TXT", 'w', encoding="utf8")
-        self.f3 = open("../data/TRAIN_SENTENCE.TXT", "w", encoding="utf8")
+        self.f = open("../data/TEST_FILE_FULL.TXT", "r", encoding="utf8")
+        self.f1 = open("../data/TEST_SENTENCE_WITH_ENTITY.TXT", "w", encoding="utf8")
+        self.f2 = open("../data/TEST_ANSWER.TXT", 'w', encoding="utf8")
+        self.f3 = open("../data/TEST_SENTENCE.TXT", "w", encoding="utf8")
 
     def ReadAndDivide(self):
         sentence_list = self.f.readlines()
