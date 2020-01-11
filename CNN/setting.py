@@ -9,7 +9,7 @@ VEC = POSVEC*2 + WORDVEC
 # 卷积核宽
 KERNELWEIGHT = 4
 # 训练次数
-EPOCH = 1000
+EPOCH = 50
 # M正的值
 M_POS = 2.5
 # M负的值
@@ -17,4 +17,4 @@ M_NEG = 0.5
 # 放大因子
 R = 2
 # 模型载入路径
-WEIGHT_PATH = ""
+WEIGHT_PATH = "../model/ModelWeights.ckpt"

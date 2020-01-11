@@ -8,7 +8,7 @@ SENTENCE_PATH = "../data/TEST_SENTENCE.TXT"
 # word2vec 模型路径
 WORD2VEC_MODEL_PATH = "../model/SemEval-2010 Task8_train_350dim.model"
 # 设置单词的最长长度
-MAX_WORD_NUM = 60
+MAX_WORD_NUM = 100
 # 关系类别数量
 LABEL_NUM = 19
 # 建立类别字典

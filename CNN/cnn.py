@@ -41,38 +41,43 @@ class Model(tf.keras.Model):
         return out
 
 class Train_Test():
-    def __init__(self,path=False):
+    def __init__(self,path=True):
         self.model = Model()
         self.outputobj = Outputlayer()
         self.output = self.outputobj()
         # 载入模型
-        if not path:
-            pass
+        if path != True:
+            self.model.load_weights(path)
 
 
     def train(self):
-        f1 = open("out.txt","w",encoding="utf8")
-        f2 = open("loss.txt","w",encoding="utf8")
-        f3 = open("grads.txt","w",encoding="utf8")
         output = self.output.batch(1).batch(1)
         optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5)
         for _ in range(setting.EPOCH):
+            print(_)
             for data in output:
                 with tf.GradientTape() as tape:
                     out = self.model(data[0])
-                    print("out:",out,file=f1)
                     loss = self.loss(out,data[1])
-                    print("loss:",loss,file=f2)
                 grads = tape.gradient(loss,self.model.trainable_variables)
-                print("grads:",grads,file=f3)
                 optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
             break
+        """输入模型保存的位置"""
+        self.model.save_weights("../model/ModelWeights.ckpt")
+
 
     def test(self):
         '''
         测试用的方法
         '''
-        pass
+        f = open("result.txt","w",encoding="utf8")
+        output = self.output.batch(1).batch(1)
+        for data in output:
+            out = self.model(data[0])
+            _,num = tf.math.top_k(out,1)
+            print(num.numpy(),file=f,end="\n")
+        f.close()
+
 
     # @tf.function
     def loss(self,input,label):
@@ -113,5 +118,9 @@ class Train_Test():
     """
 
 if __name__  == "__main__":
-    t = Train_Test()
-    t.train()
+    # t = Train_Test()
+    # t.train()
+
+    """输入模型载入的路径"""
+    t = Train_Test("../model/ModelWeights.ckpt")
+    t.test()

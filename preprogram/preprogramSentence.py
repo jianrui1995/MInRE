@@ -1,5 +1,6 @@
 import tensorflow as tf
 import preprogram.setting as setting
+# import preprogram.setting_test as setting
 import gensim
 
 class SentenceLayer():

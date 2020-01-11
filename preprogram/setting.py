@@ -31,3 +31,6 @@ answer2id = {b'Product-Producer(e2e1)': 0,
              b'Component-Whole(e1e2)': 16,
              b'Message-Topic(e2e1)': 17,
              b'Component-Whole(e2e1)': 18}
+
+#距离向量的json文件路径
+DISTANCE_VECTORY_PATH = "../data/DistanceVectory.json"

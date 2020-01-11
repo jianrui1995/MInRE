@@ -1,13 +1,25 @@
 import tensorflow as tf
 import preprogram.setting as setting
+# import preprogram.setting_test as setting
 import re
 import numpy as np
-
+import json
 
 class SentenceWithEntityLayer():
     def __init__(self):
         self.sentence_entity_dataset = tf.data.TextLineDataset(setting.SENTENCE_WITH_ENTITY_PATH)
-        self.loc_dic = { i:np.random.random(50) for i in range(-1*setting.MAX_WORD_NUM,setting.MAX_WORD_NUM)}
+
+        '''初始化随机距离向量
+        self.loc_dic = { i:np.random.random(50).tolist() for i in range(-1*setting.MAX_WORD_NUM,setting.MAX_WORD_NUM)}
+        f = open(setting.DISTANCE_VECTORY_PATH,"w",encoding="utf8")
+        json.dump(self.loc_dic,f,ensure_ascii=False)
+        f.close()
+        '''
+
+        '''从文件中载入距离向量'''
+        f = open(setting.DISTANCE_VECTORY_PATH,"r",encoding="utf8")
+        self.loc_dic = json.load(f)
+        print(self.loc_dic)
 
     def __call__(self):
         dataset = self.sentence_entity_dataset.map(lambda x: tf.py_function(self.entity2location,inp=[x],Tout=tf.float64))
@@ -30,8 +42,8 @@ class SentenceWithEntityLayer():
             if ( not mark1) and ( not mark2):
                 break
         for i in range(len(words_list)):
-            loc1 = self.loc_dic[location1-i]
-            loc2 = self.loc_dic[location2-i]
+            loc1 = self.loc_dic[str(location1-i)]
+            loc2 = self.loc_dic[str(location2-i)]
             loc_list.append(np.append(loc1,loc2))
         return [loc_list]
 
@@ -40,8 +52,8 @@ if __name__ == "__main__":
     dataset = S()
     print(dataset.element_spec)
     for s in dataset.take(1):
-        # print(s)
-        pass
+        print(s)
+
     # f = open(setting.SENTENCE_WITH_ENTITY_PATH,"r",encoding="utf8")
     # for data in f.readlines():
     #     print(data)
