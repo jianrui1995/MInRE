@@ -3,6 +3,8 @@ import CNN.setting as setting
 import preprogram.setting as Psetting
 from preprogram.preprogramoutput import Outputlayer
 
+import os
+
 class Model(tf.keras.Model):
     def __init__(self):
         init = tf.keras.initializers.RandomNormal()
@@ -12,42 +14,49 @@ class Model(tf.keras.Model):
             kernel_size=[setting.KERNELWEIGHT,setting.VEC],
             strides=(1,setting.VEC ),
             padding="SAME",
-            data_format="channels_first",
+            data_format="channels_last",
             activation=tf.nn.relu,
             use_bias=True
         )
         self.maxpool = tf.keras.layers.MaxPool2D(
             pool_size=(Psetting.MAX_WORD_NUM,1),
             padding="SAME",
-            data_format="channels_first",
+            data_format="channels_last",
         )
         self.dense = tf.keras.layers.Dense(Psetting.LABEL_NUM,use_bias=False)
 
     # @tf.function
     def call(self,input):
+        """CPU"""
+        input = tf.transpose(input,[0,2,3,1])
         out = self.conv(input)
         # dims = out.shape.dims
-        # print(dims)
         out = self.maxpool(out)
+        """CPU"""
+        out = tf.transpose(out,[0,3,1,2])
         dims = out.shape.dims
-        # print(dims)
         out = tf.reshape(out,[dims[0],-1])
         out = self.dense(out)
         dims = out.shape.dims
-        # print(dims)
+        print(dims)
         # print(out)
         # out = tf.keras.activations.tanh(out)
         # out = tf.matmul(tf.constant([[20.0]],dtype=tf.float32),out)
         return out
 
-class Train_Test():
+    def NCHW_to_NHWC(self,input):
+        pass
+
+
+
+class Train_Tes():
     def __init__(self,path=True):
         self.model = Model()
         self.outputobj = Outputlayer()
         self.output = self.outputobj()
         # 载入模型
-        if path != True:
-            self.model.load_weights(path)
+        # if path != True:
+        #     self.model.load_weights(path)
 
 
     def train(self):
@@ -57,13 +66,16 @@ class Train_Test():
             print(_)
             for data in output:
                 with tf.GradientTape() as tape:
+                    print(data[0])
                     out = self.model(data[0])
                     loss = self.loss(out,data[1])
+                print("loss:",loss)
                 grads = tape.gradient(loss,self.model.trainable_variables)
                 optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
+                break
             break
         """输入模型保存的位置"""
-        self.model.save_weights("../model/ModelWeights.ckpt")
+        # self.model.save_weights("../model/ModelWeights.ckpt")
 
 
     def test(self):
@@ -118,9 +130,9 @@ class Train_Test():
     """
 
 if __name__  == "__main__":
-    # t = Train_Test()
-    # t.train()
+    t = Train_Tes()
+    t.train()
 
     """输入模型载入的路径"""
-    t = Train_Test("../model/ModelWeights.ckpt")
-    t.test()
+    # t = Train_Tes("../model/ModelWeights.ckpt")
+    # t.test()
