@@ -25,7 +25,7 @@ class Model(tf.keras.Model):
         )
         self.dense = tf.keras.layers.Dense(Psetting.LABEL_NUM,use_bias=False)
 
-    # @tf.function
+    @tf.function
     def call(self,input):
         """CPU"""
         input = tf.transpose(input,[0,2,3,1])
@@ -38,15 +38,10 @@ class Model(tf.keras.Model):
         out = tf.reshape(out,[dims[0],-1])
         out = self.dense(out)
         dims = out.shape.dims
-        print(dims)
         # print(out)
         # out = tf.keras.activations.tanh(out)
         # out = tf.matmul(tf.constant([[20.0]],dtype=tf.float32),out)
         return out
-
-    def NCHW_to_NHWC(self,input):
-        pass
-
 
 
 class Train_Tes():
@@ -62,27 +57,47 @@ class Train_Tes():
     def train(self):
         output = self.output.batch(1).batch(1)
         optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5)
+        ckpt = tf.train.Checkpoint(op=optimizer,model=self.model)
+        manager = tf.train.CheckpointManager(ckpt,"../model/CnnModels/",max_to_keep=5,checkpoint_name="cnn")
         for _ in range(setting.EPOCH):
             print(_)
             for data in output:
                 with tf.GradientTape() as tape:
-                    print(data[0])
                     out = self.model(data[0])
                     loss = self.loss(out,data[1])
-                print("loss:",loss)
                 grads = tape.gradient(loss,self.model.trainable_variables)
                 optimizer.apply_gradients(zip(grads,self.model.trainable_variables))
-                break
-            break
+            if _ % 10 == 0 :
+                manager.save()
+
+
         """输入模型保存的位置"""
         # self.model.save_weights("../model/ModelWeights.ckpt")
 
+    def loadtest(self):
+        optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5)
+        ckpt = tf.train.Checkpoint(op=optimizer,model=self.model)
+        output = self.output.batch(1).batch(1)
+        for data in output:
+            out = self.model(data[0])
+            loss = self.loss(out,data[1])
+            print("loss1:",loss)
+            break
+        ckpt.restore("../model/CnnModels/cnn-1")
+        print("point1")
+        for data in output:
+            out = self.model(data[0])
+            loss = self.loss(out,data[1])
+            print("loss2:",loss)
+            break
 
     def test(self):
         '''
         测试用的方法
         '''
-        f = open("result.txt","w",encoding="utf8")
+        ckpt = tf.train.Checkpoint(model=self.model)
+        ckpt.restore("../model/CnnModels/cnn-1")
+        f = open("result2.txt","w",encoding="utf8")
         output = self.output.batch(1).batch(1)
         for data in output:
             out = self.model(data[0])
@@ -130,9 +145,13 @@ class Train_Tes():
     """
 
 if __name__  == "__main__":
-    t = Train_Tes()
-    t.train()
+
+    # t = Train_Tes()
+    # t.train()
 
     """输入模型载入的路径"""
-    # t = Train_Tes("../model/ModelWeights.ckpt")
-    # t.test()
+    t = Train_Tes()
+    t.test()
+
+    # t = Train_Tes()
+    # t.loadtest()
