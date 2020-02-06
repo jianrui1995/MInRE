@@ -2,7 +2,6 @@ import tensorflow as tf
 import CNN.setting as setting
 import preprogram.setting as Psetting
 from preprogram.preprogramoutput import Outputlayer
-
 import os
 
 class Model(tf.keras.Model):
