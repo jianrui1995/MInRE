@@ -57,7 +57,7 @@ class Train_Tes():
         output = self.output.batch(1).batch(1)
         optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5)
         ckpt = tf.train.Checkpoint(op=optimizer,model=self.model)
-        manager = tf.train.CheckpointManager(ckpt,"../model/CnnModels/",max_to_keep=5,checkpoint_name="cnn")
+        manager = tf.train.CheckpointManager(ckpt,"../model/CnnModels/",max_to_keep=100,checkpoint_name="cnn")
         for _ in range(setting.EPOCH):
             print(_)
             for data in output:

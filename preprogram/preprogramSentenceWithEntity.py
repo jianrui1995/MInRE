@@ -1,13 +1,12 @@
 import tensorflow as tf
 import preprogram.setting as setting
-# import preprogram.setting_test as setting
 import re
 import numpy as np
 import json
 
 class SentenceWithEntityLayer():
-    def __init__(self):
-        self.sentence_entity_dataset = tf.data.TextLineDataset(setting.SENTENCE_WITH_ENTITY_PATH)
+    def __init__(self,sentenceWithentity_path):
+        self.sentence_entity_dataset = tf.data.TextLineDataset(sentenceWithentity_path)
 
         '''初始化随机距离向量
         self.loc_dic = { i:np.random.random(50).tolist() for i in range(-1*setting.MAX_WORD_NUM,setting.MAX_WORD_NUM)}
@@ -19,10 +18,10 @@ class SentenceWithEntityLayer():
         '''从文件中载入距离向量'''
         f = open(setting.DISTANCE_VECTORY_PATH,"r",encoding="utf8")
         self.loc_dic = json.load(f)
-        print(self.loc_dic)
+
 
     def __call__(self):
-        dataset = self.sentence_entity_dataset.map(lambda x: tf.py_function(self.entity2location,inp=[x],Tout=tf.float64))
+        dataset = self.sentence_entity_dataset.map(lambda x: tf.py_function(self.entity2location,inp=[x],Tout=tf.float32))
         return dataset
 
     def entity2location(self,t):

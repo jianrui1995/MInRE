@@ -11,7 +11,7 @@ with open(setting.SENTENCE_PATH,"r",encoding="utf8") as f:
         word_list = data.strip().split(" ")
         if max < len(word_list):
             max = len(word_list)
-print( max)
+print(max)
 
 '''测试dataset.zip()'''
 # ans = Answerlayer()
