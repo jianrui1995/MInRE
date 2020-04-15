@@ -30,5 +30,6 @@ class Precison(tf.keras.metrics.Metric):
     def reset_states(self):
         self.correct.assign(0.0)
         self.total.assign(0.0)
+        tf.keras.callbacks.History
 
 

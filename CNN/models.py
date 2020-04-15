@@ -9,6 +9,7 @@ import CNN.setting as setting
 import CNN.layers as layers
 from preprogram.preprogramoutput import Outputlayer
 import CNN.metrics as metrics
+import CNN.callbacks as callbacks
 
 class CNN(tf.keras.models.Model):
     def __init__(self):
@@ -45,8 +46,8 @@ class CNN(tf.keras.models.Model):
             activation=tf.keras.activations.softmax
         )
 
-    @tf.function
-    def call(self, inputs, training=None, mask=None):
+    @tf.function(input_signature=(tf.TensorSpec(shape=[None,None,None]),))
+    def call(self, inputs):
         outputs = self.transshape(inputs,typemodel="A")
         outputs = self.cov2d(outputs)
         outputs = self.transshape(outputs,typemodel="B")
@@ -56,8 +57,8 @@ class CNN(tf.keras.models.Model):
         return outputs
 
 if __name__ == "__main__":
-    trainset = Outputlayer(setting.TRAIN_PATH)().padded_batch(4,padded_shapes=([None,None],[None]),padding_values=(0.0,0))
-    testSet = Outputlayer(setting.TEST_PATH)().padded_batch(4,padded_shapes=([None,None],[None]),padding_values=(0.0,0))
+    trainset = Outputlayer(*setting.TRAIN_PATH)().padded_batch(4,padded_shapes=([None,None],[None]),padding_values=(0.0,0))
+    testSet = Outputlayer(*setting.TEST_PATH)().padded_batch(4,padded_shapes=([None,None],[None]),padding_values=(0.0,0))
     model = CNN()
     model.compile(
         optimizer=tf.keras.optimizers.Adam(1e-4),
@@ -65,8 +66,9 @@ if __name__ == "__main__":
         metrics=[metrics.Precison()]
     )
     model.fit(
-        x=trainset.shuffle(buffer_size=100,reshuffle_each_iteration=True).batch(20),
+        x=trainset,
         epochs=setting.EPOCH,
-        validation_data=testSet.batch(21),
-        validation_freq=25
+        validation_data=testSet,
+        validation_freq=setting.SAVE_N_EPOCH,
+        callbacks=[callbacks.Save(setting.SAVE_N_EPOCH,setting.SAVE_PATH,setting.SAVE_NAME)],
     )

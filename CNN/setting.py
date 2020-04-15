@@ -13,7 +13,12 @@ KERNELWEIGHT = 4
 
 # 训练次数
 EPOCH = 1000
-
+# 每训练多少个周期存储
+SAVE_N_EPOCH = 25
+# 模型存储路径
+SAVE_PATH = "../model/CnnModels"
+# 模型保存的名字
+SAVE_NAME = "cnn"
 
 
 # 模型载入路径
